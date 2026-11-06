@@ -1,0 +1,14 @@
+{
+  "nav": "Tools",
+  "title": "Tool toggles",
+  "intro": "Turning a switch off hides that tool — schema, lookup, and execution alike. Takes effect for NEW sessions (and new subagents); live sessions keep their tool surface to protect the prefix cache.",
+  "search": "Search tools",
+  "filter.disabled": "Disabled only",
+  "empty": "No tools to show.",
+  "notReady": "No tool catalog yet. Start a session, then reopen this page.",
+  "loadFailed": "Failed to load the tool list.",
+  "retry": "Retry",
+  "confirm.core": "{name} is a core tool. Disabling it blocks most work. Continue?",
+  "error.action": "Failed to apply: {error}",
+  "count.disabled": "{count} disabled"
+}

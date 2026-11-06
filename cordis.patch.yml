@@ -1,0 +1,7 @@
+# dsh-tools-toggle bundle patch
+#
+# Mounted automatically by `dsh plugin --profile web add <path>` (Loader bundle
+# layer). Manual mounts can add the same insert entry to profiles/web/cordis.patch.yml.
+- insert:
+    - id: tools-toggle
+      name: '@npmc_5/dsh-tools-toggle'
