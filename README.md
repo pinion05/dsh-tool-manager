@@ -1,12 +1,30 @@
 # dsh-tool-manager
 
 [![Platform: DSH Web plugin](https://img.shields.io/badge/platform-DSH_Web_plugin-2563eb)](https://github.com/pinion05/dsh-tool-manager)
-[![Version: 0.5.0](https://img.shields.io/badge/version-0.5.0-blue)](https://github.com/pinion05/dsh-tool-manager/releases)
+[![Version: 0.5.1](https://img.shields.io/badge/version-0.5.1-blue)](https://github.com/pinion05/dsh-tool-manager/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
 <p align="center"><img src="icon.svg" width="120" alt="Tool Manager icon — two switches, one on and one off" /></p>
 
 **`@npmc_5/dsh-tool-manager` is a per-preset tool manager for DeepSeek Harness (DSH).** It mounts a **Tool Manager** section in the web Settings page where each agent preset gets its own view of the tools it *actually* enables: flip a switch and the tool is hidden from the model for that preset only — no schema in the request, no lookup, no execution — click a row to inspect what the tool does and which plugin registers it. All of it without editing a profile patch or restarting the host.
+
+## Proof it works
+
+Disable every tool for a preset, and the next request carries **zero tools** — the trajectory inspector shows `No tools in this request`:
+
+<p align="center">
+  <img src="docs/settings-disable-all.png" width="49%" alt="Tool Manager with all 42 tools disabled for the standard preset" />
+  <img src="docs/proof-zero-tools.png" width="49%" alt="Trajectory inspector: the model request contains no tools at all" />
+</p>
+
+Re-enable just `bash`, and the very next request carries exactly one tool — the model says so itself:
+
+<p align="center">
+  <img src="docs/settings-bash-only.png" width="49%" alt="Tool Manager with only bash enabled (41 still disabled)" />
+  <img src="docs/proof-bash-only.png" width="49%" alt="Trajectory inspector: the request carries exactly one tool — bash — and the model confirms it" />
+</p>
+
+No schema, no lookup, no execution — and no mention in the system prompt. The tool is simply absent from the model's world.
 
 ## Highlights
 
