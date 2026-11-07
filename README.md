@@ -26,6 +26,12 @@ Re-enable just `bash`, and the very next request carries exactly one tool — th
 
 No schema, no lookup, no execution — and no mention in the system prompt. The tool is simply absent from the model's world.
 
+**Click any row to inspect it.** The detail panel shows which plugin registers the tool, the parameter schema as readable rows (required badges, types, allowed values, defaults), and the full description:
+
+<p align="center">
+  <img src="docs/detail-inspector.png" width="72%" alt="Detail panel for bash: source plugin @deepseek-ai/dsh-tool-bash, parameter schema with required badges, types, allowed values, and the full description" />
+</p>
+
 ## Highlights
 
 - **Preset-accurate baseline.** The list is read straight from the preset's own retained scope through an isolated lease, so no live session is required and the plugin's own deny restrictions cannot pollute it. Tools the preset disables by default never appear, because they never register.
