@@ -27,5 +27,8 @@
   "detail.source": "Source",
   "detail.sourceUnknown": "unknown source",
   "detail.parameters": "Parameters",
-  "detail.noParameters": "No parameters"
+  "detail.noParameters": "No parameters",
+  "detail.required": "required",
+  "detail.oneOf": "Allowed",
+  "detail.default": "Default"
 }

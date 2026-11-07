@@ -27,5 +27,8 @@
   "detail.source": "출처",
   "detail.sourceUnknown": "출처 미상",
   "detail.parameters": "파라미터",
-  "detail.noParameters": "파라미터 없음"
+  "detail.noParameters": "파라미터 없음",
+  "detail.required": "필수",
+  "detail.oneOf": "허용값",
+  "detail.default": "기본값"
 }
