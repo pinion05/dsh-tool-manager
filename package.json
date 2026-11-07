@@ -1,7 +1,7 @@
 {
-  "name": "@npmc_5/dsh-tools-toggle",
-  "version": "0.1.0",
-  "description": "Toggle inherited model tools on/off for every agent from the DSH web Settings page (deny-list applied through dsh-tools restrict)",
+  "name": "@npmc_5/dsh-tool-manager",
+  "version": "0.5.0",
+  "description": "Per-preset tool manager for DeepSeek Harness: browse each preset's real tool surface, inspect parameters and source plugins, and hide tools from the model per preset.",
   "license": "MIT",
   "type": "module",
   "main": "lib/index.js",
@@ -47,7 +47,13 @@
     "deepseek-harness",
     "dsh",
     "dsh-plugin",
-    "tools",
-    "toggle"
-  ]
+    "preset",
+    "toggle",
+    "tool-manager",
+    "tools"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pinion05/dsh-tool-manager.git"
+  }
 }
