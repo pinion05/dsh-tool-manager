@@ -1,7 +1,7 @@
 # dsh-tool-manager
 
 [![Platform: DSH Web plugin](https://img.shields.io/badge/platform-DSH_Web_plugin-2563eb)](https://github.com/pinion05/dsh-tool-manager)
-[![Version: 0.6.0](https://img.shields.io/badge/version-0.6.0-blue)](https://github.com/pinion05/dsh-tool-manager/releases)
+[![Version: 0.6.0](https://img.shields.io/badge/version-0.6.1-blue)](https://github.com/pinion05/dsh-tool-manager/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
 <p align="center"><img src="icon.svg" width="120" alt="Tool Manager icon — two switches, one on and one off" /></p>
@@ -34,7 +34,7 @@ No schema, no lookup, no execution — and no mention in the system prompt. The 
 
 ## Real-tokenizer context accounting (v0.6.0)
 
-Every tool row's detail panel carries a **Context tokens** figure, and the toolbar summarizes the whole active tool block (`36 enabled · 7,935 tokens`). These are *measured*, not estimated:
+Every tool row carries a tiny right-aligned **context-token figure** (hover for the meaning), and the toolbar summarizes the whole active tool block (`36 enabled · 7,935 tokens`). These are *measured*, not estimated:
 
 - **The model's own tokenizer.** Counts use the GLM-5.3 byte-level BPE loaded from zai-org's published `tokenizer.json` (vocab 154,820, GPT-2-lineage Ġ/Ċ byte-level with `ignore_merges`). The encoder is implemented in ~100 lines inside the plugin and was fuzz-verified **1:1 against the official Rust `tokenizers` crate** (296/296 random + 13/13 structured cases, including Korean, JSON, contractions, and special-token strings).
 - **The text the serving stack actually renders.** GLM serving passes each tool through the chat template's `tool_to_json` macro — the OpenAI `function` wrapper is unwrapped, `strict`/`defer_loading` dropped, and `{"name": …, "description": …, "parameters": …}` emitted with Python `json.dumps` spacing, one line per tool inside `<tools></tools>`. The plugin replicates that byte-for-byte (plus the fixed instruction header/footer) and counts the **concatenated** block, so tokens straddling seams are attributed exactly once.
@@ -43,7 +43,7 @@ Every tool row's detail panel carries a **Context tokens** figure, and the toolb
 The tokenizer file loads lazily on first use (the page polls and fills the figures in), then caches under `~/.dsh/cache/tool-manager/tokenizer.json`. Two config knobs on the plugin row: `tokenizerPath` (absolute path to any HF `tokenizer.json` — e.g. a future GLM release) and `tokenizerUrl` (download source). Offline? The figures are simply hidden with an inline note; nothing else degrades.
 
 <p align="center">
-  <img src="docs/context-tokens.png" width="72%" alt="Detail panel for windmill_scripts showing Context tokens: 1,143 tokens measured with GLM-5.3, and the toolbar summary 36 enabled · 7,935 tokens" />
+  <img src="docs/context-tokens.png" width="72%" alt="Tool list with tiny per-row token counts (9px, right-aligned), bash detail panel expanded, and the toolbar summary 36 enabled · 7,935 tokens" />
 </p>
 
 ## Highlights

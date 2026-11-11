@@ -1,6 +1,6 @@
 {
   "name": "@npmc_5/dsh-tool-manager",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Per-preset tool manager for DeepSeek Harness: browse each preset's real tool surface, inspect parameters and source plugins, and hide tools from the model per preset.",
   "license": "MIT",
   "type": "module",
