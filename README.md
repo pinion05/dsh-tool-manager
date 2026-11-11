@@ -1,7 +1,7 @@
 # dsh-tool-manager
 
 [![Platform: DSH Web plugin](https://img.shields.io/badge/platform-DSH_Web_plugin-2563eb)](https://github.com/pinion05/dsh-tool-manager)
-[![Version: 0.6.0](https://img.shields.io/badge/version-0.6.1-blue)](https://github.com/pinion05/dsh-tool-manager/releases)
+[![Version: 0.6.0](https://img.shields.io/badge/version-0.6.2-blue)](https://github.com/pinion05/dsh-tool-manager/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
 <p align="center"><img src="icon.svg" width="120" alt="Tool Manager icon — two switches, one on and one off" /></p>
