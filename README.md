@@ -1,7 +1,7 @@
 # dsh-tool-manager
 
 [![Platform: DSH Web plugin](https://img.shields.io/badge/platform-DSH_Web_plugin-2563eb)](https://github.com/pinion05/dsh-tool-manager)
-[![Version: 0.5.1](https://img.shields.io/badge/version-0.5.1-blue)](https://github.com/pinion05/dsh-tool-manager/releases)
+[![Version: 0.6.0](https://img.shields.io/badge/version-0.6.0-blue)](https://github.com/pinion05/dsh-tool-manager/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
 <p align="center"><img src="icon.svg" width="120" alt="Tool Manager icon — two switches, one on and one off" /></p>
@@ -26,17 +26,32 @@ Re-enable just `bash`, and the very next request carries exactly one tool — th
 
 No schema, no lookup, no execution — and no mention in the system prompt. The tool is simply absent from the model's world.
 
-**Click any row to inspect it.** The detail panel shows which plugin registers the tool, the parameter schema as readable rows (required badges, types, allowed values, defaults), and the full description:
+**Click any row to inspect it.** The detail panel shows which plugin registers the tool, the parameter schema as readable rows (required badges, types, allowed values, defaults), the full description, and **exactly how many context tokens the tool definition costs** — counted with the model family's real tokenizer, not an estimate:
 
 <p align="center">
   <img src="docs/detail-inspector.png" width="72%" alt="Detail panel for bash: source plugin @deepseek-ai/dsh-tool-bash, parameter schema with required badges, types, allowed values, and the full description" />
+</p>
+
+## Real-tokenizer context accounting (v0.6.0)
+
+Every tool row's detail panel carries a **Context tokens** figure, and the toolbar summarizes the whole active tool block (`36 enabled · 7,935 tokens`). These are *measured*, not estimated:
+
+- **The model's own tokenizer.** Counts use the GLM-5.3 byte-level BPE loaded from zai-org's published `tokenizer.json` (vocab 154,820, GPT-2-lineage Ġ/Ċ byte-level with `ignore_merges`). The encoder is implemented in ~100 lines inside the plugin and was fuzz-verified **1:1 against the official Rust `tokenizers` crate** (296/296 random + 13/13 structured cases, including Korean, JSON, contractions, and special-token strings).
+- **The text the serving stack actually renders.** GLM serving passes each tool through the chat template's `tool_to_json` macro — the OpenAI `function` wrapper is unwrapped, `strict`/`defer_loading` dropped, and `{"name": …, "description": …, "parameters": …}` emitted with Python `json.dumps` spacing, one line per tool inside `<tools></tools>`. The plugin replicates that byte-for-byte (plus the fixed instruction header/footer) and counts the **concatenated** block, so tokens straddling seams are attributed exactly once.
+- **End-to-end proof against the live API.** Sending the `standard` preset's 36 enabled tools to the real `glm-5.3` endpoint: `usage.prompt_tokens` rose by **7,935**; the plugin's `enabledTotal` said **7,935**. Diff: **0**. (0/1/2-tool calibration requests matched to the token as well.)
+
+The tokenizer file loads lazily on first use (the page polls and fills the figures in), then caches under `~/.dsh/cache/tool-manager/tokenizer.json`. Two config knobs on the plugin row: `tokenizerPath` (absolute path to any HF `tokenizer.json` — e.g. a future GLM release) and `tokenizerUrl` (download source). Offline? The figures are simply hidden with an inline note; nothing else degrades.
+
+<p align="center">
+  <img src="docs/context-tokens.png" width="72%" alt="Detail panel for windmill_scripts showing Context tokens: 1,143 tokens measured with GLM-5.3, and the toolbar summary 36 enabled · 7,935 tokens" />
 </p>
 
 ## Highlights
 
 - **Preset-accurate baseline.** The list is read straight from the preset's own retained scope through an isolated lease, so no live session is required and the plugin's own deny restrictions cannot pollute it. Tools the preset disables by default never appear, because they never register.
 - **Per-preset hide lists that can't clobber siblings.** Every HTTP write names exactly one preset key, and the settings service deep-merges dict keys — sibling presets are structurally untouchable, by construction rather than by discipline.
-- **Tool detail inspector.** Click a row (or press Enter/Space) to expand an inline panel: the registering plugin's package name (`core` for built-ins, an explicit "unknown source" rather than a wrong name when attribution isn't possible), the tool's full parameter JSON schema, and its complete description. One panel open at a time; it collapses when you switch presets.
+- **Tool detail inspector.** Click a row (or press Enter/Space) to expand an inline panel: the registering plugin's package name (`core` for built-ins, an explicit "unknown source" rather than a wrong name when attribution isn't possible), the tool's full parameter JSON schema, its complete description, and its real-tokenizer context cost.
+- **Real-tokenizer context accounting.** Per-tool and whole-block token counts measured with the model family's own byte-level BPE on the text the serving template renders — verified against both the official Rust tokenizer and the live API's `usage.prompt_tokens` (see [above](#real-tokenizer-context-accounting-v060)). No chars-per-4 guessing anywhere. One panel open at a time; it collapses when you switch presets.
 - **Bulk enable/disable with confirm.** *Enable all* clears the preset's hide list (the button shows how many toggles it will clear); *Disable all* denies a snapshot of the preset's current baseline after a confirm dialog. While any write is in flight, the preset chips, tool switches, and bulk buttons lock so a scope can't change mid-write.
 - **Safe persistence.** State lives in the plugin's own Loader-entry config and is written exclusively as single-key partial patches through the settings service, on a serialized write chain. A failed persist rolls back only the key that failed — intents already accepted for sibling keys survive and persist in their own queued patches. Externally committed changes (hand-edits, other writers) are re-synced, and each mount re-syncs from the committed file when no write is queued.
 - **Hard timeouts everywhere.** The preset roster (1.2 s) and each baseline lookup (2.5 s) run against deadlines, so a wedged plugin in the loader tree degrades to a "failed to load" chip or an inline error instead of freezing the Settings page.
